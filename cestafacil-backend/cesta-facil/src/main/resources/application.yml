@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: cestafacil-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/cestafacil}
+    username: ${DB_USER:root}
+    password: ${DB_PASS:cestafacil123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USER:noreply@cestafacil.com.br}
+    password: ${MAIL_PASS:senha_app}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+    time-zone: America/Sao_Paulo
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:cestafacil-jwt-secret-key-muito-segura-2026-spring-security}
+    expiration-ms: 86400000
+
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:sk_test_sua_chave_aqui}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_sua_chave_aqui}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+logging:
+  level:
+    br.com.cestafacil: DEBUG
+    org.springframework.security: INFO
