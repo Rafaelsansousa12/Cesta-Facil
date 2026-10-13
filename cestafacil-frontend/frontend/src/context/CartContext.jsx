@@ -6,24 +6,25 @@ const FRETE_GRATIS_ACIMA = 200
 const VALOR_FRETE = 15
 
 function cartReducer(state, action) {
+  const items = state.items || []
   switch (action.type) {
     case 'ADD': {
-      const exists = state.items.find(i => i.id === action.item.id)
+      const exists = items.find(i => i.id === action.item.id)
       if (exists) {
-        return { ...state, items: state.items.map(i =>
+        return { ...state, items: items.map(i =>
           i.id === action.item.id ? { ...i, qty: i.qty + 1 } : i) }
       }
-      return { ...state, items: [...state.items, { ...action.item, qty: 1 }] }
+      return { ...state, items: [...items, { ...action.item, qty: 1 }] }
     }
     case 'REMOVE':
-      return { ...state, items: state.items.filter(i => i.id !== action.id) }
+      return { ...state, items: items.filter(i => i.id !== action.id) }
     case 'UPDATE_QTY':
-      if (action.qty <= 0) return { ...state, items: state.items.filter(i => i.id !== action.id) }
-      return { ...state, items: state.items.map(i => i.id === action.id ? { ...i, qty: action.qty } : i) }
+      if (action.qty <= 0) return { ...state, items: items.filter(i => i.id !== action.id) }
+      return { ...state, items: items.map(i => i.id === action.id ? { ...i, qty: action.qty } : i) }
     case 'CLEAR':
       return { items: [] }
     case 'LOAD':
-      return { items: action.items }
+      return { items: action.items || [] }
     default:
       return state
   }
