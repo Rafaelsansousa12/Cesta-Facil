@@ -11,15 +11,18 @@ export default function Home() {
   const [loading,     setLoading]     = useState(true)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    Promise.all([
-      produtosAPI.listar({ size: 4, sort: '-id' }),
-      produtosAPI.categorias(),
-    ]).then(([p, c]) => {
-      setProdutos(p.data.content)
-      setCategorias(Array.isArray(c.data) ? c.data : c.data.content || [])
-    }).finally(() => setLoading(false))
-  }, [])
+ useEffect(() => {
+  Promise.all([
+    produtosAPI.listar({ size: 4, sort: 'id', page: 0 }),
+    produtosAPI.categorias(),
+  ]).then(([p, c]) => {
+    setProdutos(p.data?.content || [])
+    setCategorias(Array.isArray(c.data) ? c.data : c.data?.content || [])
+  }).catch(() => {
+    setProdutos([])
+    setCategorias([])
+  }).finally(() => setLoading(false))
+}, [])
 
   const diferenciais = [
     { icon: <Truck className="w-6 h-6" />,       title: 'Entrega Rápida',     desc: 'Receba em até 3 dias úteis em Praia Grande e região.' },
