@@ -7,11 +7,13 @@ import br.com.cestafacil.model.enums.PerfilUsuario;
 import br.com.cestafacil.repository.UsuarioRepository;
 import br.com.cestafacil.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -33,25 +35,30 @@ public class AuthService {
         if (usuarioRepository.existsByEmail(request.email()))
             throw new BusinessException("E-mail já cadastrado: " + request.email());
 
-        Usuario usuario = Usuario.builder()
-            .nome(request.nome())
-            .email(request.email())
-            .senhaHash(passwordEncoder.encode(request.senha()))
-            .telefone(request.telefone())
-            .cep(request.cep())
-            .logradouro(request.logradouro())
-            .numero(request.numero())
-            .complemento(request.complemento())
-            .bairro(request.bairro())
-            .cidade(request.cidade())
-            .uf(request.uf())
-            .perfil(PerfilUsuario.CLIENTE)
-            .ativo(true)
-            .build();
+        try {
+            Usuario usuario = Usuario.builder()
+                    .nome(request.nome())
+                    .email(request.email())
+                    .senhaHash(passwordEncoder.encode(request.senha()))
+                    .telefone(request.telefone())
+                    .cep(request.cep())
+                    .logradouro(request.logradouro())
+                    .numero(request.numero())
+                    .complemento(request.complemento())
+                    .bairro(request.bairro())
+                    .cidade(request.cidade())
+                    .uf(request.uf())
+                    .perfil(PerfilUsuario.CLIENTE)
+                    .ativo(true)
+                    .build();
 
-        usuarioRepository.save(usuario);
-        String token = jwtUtil.generateToken(usuario);
-        return new AuthResponse(token, "Bearer", usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getPerfil());
+            usuarioRepository.save(usuario);
+            String token = jwtUtil.generateToken(usuario);
+            return new AuthResponse(token, "Bearer", usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getPerfil());
+        } catch (Exception e) {
+            log.error("Erro ao registrar usuario: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     public UsuarioResponse getMe(String email) {
