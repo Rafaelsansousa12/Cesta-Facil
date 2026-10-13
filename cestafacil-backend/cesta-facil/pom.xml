@@ -70,8 +70,16 @@
     <!-- Flyway (migrações de banco) -->
     <dependency>
       <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-mysql</artifactId>
+      <artifactId>flyway-core</artifactId>
+      <version>10.20.1</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+      <version>10.20.1</version>
+    </dependency>
+
 
     <!-- JJWT (JSON Web Token) -->
     <dependency>
