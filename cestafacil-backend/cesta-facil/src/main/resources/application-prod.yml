@@ -28,3 +28,9 @@ app:
 
   cors:
     allowed-origins: ${CORS_ORIGINS}
+
+    logging:
+      level:
+        br.com.cestafacil: DEBUG
+        org.springframework.security: DEBUG
+        org.springframework.web: DEBUG
