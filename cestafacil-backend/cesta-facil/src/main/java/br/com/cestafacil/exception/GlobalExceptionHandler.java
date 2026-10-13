@@ -1,16 +1,17 @@
 package br.com.cestafacil.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -20,6 +21,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(new ErrorResponse(404, "Recurso não encontrado", e.getMessage(), LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception e) {
+        log.error("Erro interno: ", e); // adicione essa linha
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(500, "Erro interno", "Ocorreu um erro inesperado. Tente novamente.", LocalDateTime.now()));
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -52,11 +60,5 @@ public class GlobalExceptionHandler {
             .collect(Collectors.toMap(FieldError::getField, fe -> Objects.requireNonNullElse(fe.getDefaultMessage(), "inválido")));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(400, "Erro de validação", erros, LocalDateTime.now()));
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ErrorResponse(500, "Erro interno", "Ocorreu um erro inesperado. Tente novamente.", LocalDateTime.now()));
     }
 }
