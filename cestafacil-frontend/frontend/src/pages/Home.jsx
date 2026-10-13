@@ -17,7 +17,7 @@ export default function Home() {
       produtosAPI.categorias(),
     ]).then(([p, c]) => {
       setProdutos(p.data.content)
-      setCategorias(c.data)
+      setCategorias(Array.isArray(c.data) ? c.data : c.data.content || [])
     }).finally(() => setLoading(false))
   }, [])
 
