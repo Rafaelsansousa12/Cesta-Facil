@@ -24,8 +24,12 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.email(), request.senha()));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.senha()));
+        } catch (Exception e) {
+            log.error("Erro na autenticacao: {} - {}", e.getClass().getName(), e.getMessage());
+            throw e;
+        }
         Usuario usuario = usuarioRepository.findByEmail(request.email()).orElseThrow();
         String token = jwtUtil.generateToken(usuario);
         return new AuthResponse(token, "Bearer", usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getPerfil());

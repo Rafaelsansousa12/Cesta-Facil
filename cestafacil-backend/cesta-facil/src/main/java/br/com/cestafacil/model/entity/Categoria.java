@@ -16,6 +16,6 @@ public class Categoria {
     @Column(length = 255)
     private String descricao;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean ativo = true;
 }

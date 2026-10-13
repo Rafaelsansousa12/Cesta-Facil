@@ -59,7 +59,7 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private PerfilUsuario perfil = PerfilUsuario.CLIENTE;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean ativo = true;
 
     @CreationTimestamp
