@@ -36,7 +36,9 @@ export default function Catalogo() {
   }, [page, categoriaId, termo, sort])
 
   useEffect(() => { fetchProdutos() }, [fetchProdutos])
-  useEffect(() => { produtosAPI.categorias().then(r => setCategorias(r.data.content)) }, [])
+  useEffect(() => { 
+  produtosAPI.categorias().then(r => setCategorias(Array.isArray(r.data) ? r.data : r.data.content || []))
+}, [])
 
   const catAtual = categorias?.find(c => String(c.id) === categoriaId)
 
