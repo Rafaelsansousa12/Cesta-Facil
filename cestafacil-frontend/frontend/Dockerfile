@@ -3,6 +3,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 RUN chmod +x node_modules/.bin/vite && node_modules/.bin/vite build
 
 FROM nginx:alpine
